@@ -1,0 +1,1516 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  font-family: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  color: #493f35;
+  background: #eee8df;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #eee8df;
+}
+
+button {
+  font: inherit;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* 모바일 게임 전체 화면 */
+.game {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 22px 18px 24px;
+  background: #fff8e9;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 상단 */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 3px;
+}
+
+.tiny {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #a49787;
+  margin-bottom: 3px;
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 25px;
+  color: #51463a;
+}
+
+.day {
+  background: #ffffff;
+  border: 2px solid #e7d8c3;
+  border-radius: 50px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #e7d8c3;
+}
+
+/* 캐릭터가 사는 방 */
+.pet-room {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  border: 3px solid #e6d3b8;
+  border-radius: 30px;
+  background:
+    linear-gradient(
+      to bottom,
+      #ccecf4 0%,
+      #dff4f5 63%,
+      #e7d2ad 63%,
+      #e7d2ad 100%
+    );
+  box-shadow: 0 8px 0 #dfc9a9;
+}
+
+/* 창문 느낌 */
+.window {
+  position: absolute;
+  left: 24px;
+  top: 25px;
+  width: 105px;
+  height: 80px;
+  background: #a9dce9;
+  border: 6px solid #fff7e7;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.window::before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  background: #fff7e7;
+  left: 47px;
+}
+
+.window::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  background: #fff7e7;
+  top: 35px;
+}
+
+/* 캐릭터 */
+.pet {
+  position: absolute;
+  left: 50%;
+  bottom: 68px;
+  width: 150px;
+  height: 155px;
+  transform: translateX(-50%);
+  animation: float 2.5s ease-in-out infinite;
+}
+
+.pet-body {
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  width: 130px;
+  height: 125px;
+  border: 4px solid #6d5948;
+  border-radius: 48% 48% 44% 44%;
+  background: #f7c978;
+  box-shadow: inset 0 -9px 0 rgba(171, 114, 55, 0.12);
+}
+
+.ear {
+  position: absolute;
+  top: 7px;
+  width: 52px;
+  height: 58px;
+  background: #f7c978;
+  border: 4px solid #6d5948;
+  border-radius: 50% 50% 30% 30%;
+}
+
+.left-ear {
+  left: 10px;
+  transform: rotate(-25deg);
+}
+
+.right-ear {
+  right: 10px;
+  transform: rotate(25deg);
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  top: 47px;
+  text-align: center;
+  font-size: 29px;
+  font-weight: 900;
+  color: #59493d;
+  letter-spacing: 2px;
+}
+
+/* 바닥 그림자 */
+.pet-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 54px;
+  width: 130px;
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(86, 66, 43, 0.14);
+}
+
+/* 말풍선 */
+.speech {
+  position: absolute;
+  top: 35px;
+  right: 20px;
+  max-width: 125px;
+  padding: 10px 14px;
+  background: white;
+  border: 2px solid #dfcfbb;
+  border-radius: 18px 18px 18px 5px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 0 rgba(128, 99, 67, 0.08);
+}
+
+/* 상태창 */
+.status-card {
+  background: white;
+  border: 2px solid #eadcc9;
+  border-radius: 22px;
+  padding: 15px;
+  box-shadow: 0 5px 0 #eadcc9;
+}
+
+.status-row {
+  display: grid;
+  grid-template-columns: 78px 1fr 28px;
+  gap: 9px;
+  align-items: center;
+  min-height: 32px;
+}
+
+.status-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bar {
+  height: 11px;
+  overflow: hidden;
+  background: #eee9e1;
+  border-radius: 20px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #f0b65e;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.status-number {
+  font-size: 11px;
+  font-weight: 800;
+  text-align: right;
+  color: #887968;
+}
+
+/* 행동 버튼 */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-top: auto;
+}
+
+.actions button {
+  min-height: 73px;
+  border: 2px solid #e4d4bf;
+  border-radius: 20px;
+  background: white;
+  color: #54483d;
+  box-shadow: 0 5px 0 #e4d4bf;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+
+.actions button span {
+  font-size: 25px;
+}
+
+.actions button small {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.actions button:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #e4d4bf;
+}
+
+/* 캐릭터 둥실둥실 */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-7px);
+  }
+}
+
+/* PC에서 볼 때 휴대폰처럼 */
+@media (min-width: 600px) {
+  body {
+    padding: 25px 0;
+  }
+
+  .game {
+    min-height: calc(100vh - 50px);
+    border-radius: 32px;
+    box-shadow: 0 15px 45px rgba(78, 62, 44, 0.12);
+  }
+}
+
+/* =========================
+   꺢 CHARACTER
+========================= */
+
+.kkaek-character {
+  position: absolute;
+  left: 50%;
+  bottom: 67px;
+
+  width: 170px;
+  height: 190px;
+
+  transform: translateX(-50%);
+
+  animation: kkaekFloat 2.4s ease-in-out infinite;
+}
+
+
+/* 얼굴 */
+
+.kkaek-head {
+  position: absolute;
+
+  width: 145px;
+  height: 145px;
+
+  left: 50%;
+  bottom: 0;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+
+  border: 4px solid #292929;
+  border-radius: 50%;
+
+  z-index: 2;
+}
+
+
+/* 붙어있는 웃는 눈 */
+
+.kkaek-eyes {
+  position: absolute;
+  left: 50%;
+  top: 51px;
+
+  width: 56px;
+  height: 30px;
+
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+.kkaek-eyes path {
+  fill: none;
+  stroke: #292929;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* 웃는 입 */
+
+.kkaek-mouth {
+  position: absolute;
+  left: 50%;
+  top: 70px;
+
+  width: 108px;
+  height: 63px;
+
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+.kkaek-mouth path {
+  fill: none;
+  stroke: #292929;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* 아기 때는 몸 없음 */
+
+.kkaek-character.baby .kkaek-body {
+  display: none;
+}
+
+
+/* 둥둥 */
+
+@keyframes kkaekFloat {
+
+  0%,
+  100% {
+    transform:
+      translateX(-50%)
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateX(-50%)
+      translateY(-7px);
+  }
+}
+
+/* 어린이가 되면 전체 영역 */
+.kkaek-character.child {
+  height: 205px;
+  bottom: 55px;
+}
+
+/* 머리는 지금보다 조금 덜 올라감 */
+.kkaek-character.child .kkaek-head {
+  bottom: 43px;
+}
+
+/* 몸통을 짧고 통통하게 */
+.kkaek-character.child .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  width: 88px;
+  height: 60px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+
+  border: 4px solid #292929;
+  border-radius: 48% 48% 46% 46%;
+
+  z-index: 2;
+}
+
+/* 어린 꺢 발 */
+.kkaek-feet {
+  display: none;
+}
+
+.kkaek-character.child .kkaek-feet {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+
+  width: 100px;
+  height: 35px;
+
+  transform: translateX(-50%);
+
+  z-index: 0;
+}
+
+.kkaek-foot {
+  position: absolute;
+  bottom: 0;
+
+  width: 36px;
+  height: 22px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+}
+
+.kkaek-foot.left {
+  left: 15px;
+
+  border-radius: 55% 45% 50% 50%;
+  transform: rotate(-10deg);
+}
+
+.kkaek-foot.right {
+  right: 15px;
+
+  border-radius: 45% 55% 50% 50%;
+  transform: rotate(10deg);
+}
+
+/* 몸통은 발보다 앞으로 */
+.kkaek-character.child .kkaek-body {
+  z-index: 2;
+}
+
+/* =========================
+   알 꺢
+========================= */
+
+.egg-character {
+  position: absolute;
+  left: 50%;
+  bottom: 70px;
+
+  width: 150px;
+  height: 170px;
+
+  transform: translateX(-50%);
+  animation: eggWiggle 1.5s ease-in-out infinite;
+}
+
+.egg-shell {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  width: 120px;
+  height: 150px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  border-radius: 55% 55% 48% 48%;
+}
+
+
+/* 알이 살짝 흔들림 */
+
+@keyframes eggWiggle {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-3deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotate(3deg);
+  }
+}
+
+/* =========================
+   알 부화 연출
+========================= */
+
+.egg-crack {
+  display: none;
+
+  position: absolute;
+
+  width: 3px;
+
+  background: #292929;
+
+  border-radius: 2px;
+
+  transform-origin: top center;
+}
+
+.egg-character.cracking .egg-crack {
+  display: block;
+}
+
+
+/* 가운데 금 */
+
+.crack-one {
+  left: 58px;
+  top: 48px;
+
+  height: 28px;
+
+  transform: rotate(18deg);
+}
+
+
+/* 왼쪽으로 갈라지는 금 */
+
+.crack-two {
+  left: 50px;
+  top: 67px;
+
+  height: 22px;
+
+  transform: rotate(-42deg);
+}
+
+
+/* 오른쪽으로 갈라지는 금 */
+
+.crack-three {
+  left: 65px;
+  top: 69px;
+
+  height: 22px;
+
+  transform: rotate(47deg);
+}
+
+
+/* 부화 직전 더 심하게 흔들림 */
+
+.egg-character.cracking {
+  animation: eggHatchShake 0.35s ease-in-out infinite;
+}
+
+@keyframes eggHatchShake {
+  0% {
+    transform: translateX(-50%) rotate(-5deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotate(5deg);
+  }
+
+  100% {
+    transform: translateX(-50%) rotate(-5deg);
+  }
+}
+
+/* ==================================
+   성체 꺢 공통
+================================== */
+
+.kkaek-arms,
+.kkaek-legs {
+  display: none;
+}
+
+
+/* ==================================
+   장난꾸러기 성체
+================================== */
+
+.kkaek-character.playful {
+  height: 235px;
+  bottom: 45px;
+}
+
+
+/* 머리 */
+
+.kkaek-character.playful .kkaek-head {
+  bottom: 78px;
+  z-index: 5;
+}
+
+
+/* 몸 */
+
+.kkaek-character.playful .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 43px;
+
+  width: 88px;
+  height: 95px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  /* 너무 완벽한 타원 말고 꺢 원형처럼 */
+  border-radius: 42% 45% 35% 38%;
+
+  z-index: 2;
+}
+
+
+/* 어린이용 발은 성체에서 숨김 */
+
+.kkaek-character.playful .kkaek-feet {
+  display: none;
+}
+
+
+/* 팔 */
+
+.kkaek-character.playful .kkaek-arms {
+  display: block;
+}
+
+.kkaek-character.playful .kkaek-arm {
+  position: absolute;
+  bottom: 91px;
+
+  width: 58px;
+  height: 24px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.playful .kkaek-arm.left {
+  left: 12px;
+
+  border-radius: 70% 20% 45% 55%;
+  transform: rotate(-20deg);
+}
+
+.kkaek-character.playful .kkaek-arm.right {
+  right: 12px;
+
+  border-radius: 20% 70% 55% 45%;
+  transform: rotate(20deg);
+}
+
+
+/* 다리 */
+
+.kkaek-character.playful .kkaek-legs {
+  display: block;
+}
+
+.kkaek-character.playful .kkaek-leg {
+  position: absolute;
+  bottom: 12px;
+
+  width: 35px;
+  height: 66px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.playful .kkaek-leg.left {
+  left: 64px;
+
+  border-radius: 35% 35% 60% 45%;
+  transform: rotate(5deg);
+}
+
+.kkaek-character.playful .kkaek-leg.right {
+  right: 64px;
+
+  border-radius: 35% 35% 45% 60%;
+  transform: rotate(-5deg);
+}
+
+/* ==================================
+   먹보 꺢
+================================== */
+
+.kkaek-character.chubby {
+  height: 250px;
+  bottom: 35px;
+}
+
+
+/* 머리 */
+
+.kkaek-character.chubby .kkaek-head {
+  bottom: 96px;
+  z-index: 5;
+}
+
+
+/* 몸통 - 배 엄청 큼 */
+
+.kkaek-character.chubby .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+
+  width: 190px;
+  height: 125px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  border-radius: 52% 52% 47% 47%;
+
+  z-index: 2;
+}
+
+
+/* 어린이용 발 숨김 */
+
+.kkaek-character.chubby .kkaek-feet {
+  display: none;
+}
+
+
+/* ===== 먹보 팔 ===== */
+
+.kkaek-character.chubby .kkaek-arm {
+  position: absolute;
+  bottom: 105px;
+
+  width: 58px;
+  height: 42px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.chubby .kkaek-arm.left {
+  left: -35px;
+  border-radius: 65% 35% 55% 45%;
+  transform: rotate(-35deg);
+}
+
+.kkaek-character.chubby .kkaek-arm.right {
+  right: -35px;
+  border-radius: 35% 65% 45% 55%;
+  transform: rotate(35deg);
+}
+
+
+/* ===== 먹보 발 ===== */
+
+.kkaek-character.chubby .kkaek-leg {
+  position: absolute;
+  bottom: 8px;
+
+  width: 78px;
+  height: 46px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.chubby .kkaek-leg.left {
+  left: -18px;
+  border-radius: 60% 35% 65% 45%;
+  transform: rotate(-32deg);
+}
+
+.kkaek-character.chubby .kkaek-leg.right {
+  right: -18px;
+  border-radius: 35% 60% 45% 65%;
+  transform: rotate(32deg);
+}
+
+
+/* 몸통은 팔다리보다 앞 */
+.kkaek-character.chubby .kkaek-body {
+  z-index: 2;
+}
+
+/* ===== 먹보 팔다리 기준점 리셋 ===== */
+
+.kkaek-character.chubby .kkaek-arms,
+.kkaek-character.chubby .kkaek-legs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+
+/* 팔 */
+.kkaek-character.chubby .kkaek-arm {
+  position: absolute;
+  top: 105px;
+
+  width: 65px;
+  height: 42px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.chubby .kkaek-arm.left {
+  left: -38px;
+  border-radius: 65% 35% 55% 45%;
+  transform: rotate(-25deg);
+}
+
+.kkaek-character.chubby .kkaek-arm.right {
+  right: -38px;
+  border-radius: 35% 65% 45% 55%;
+  transform: rotate(25deg);
+}
+
+
+/* 발 */
+.kkaek-character.chubby .kkaek-leg {
+  position: absolute;
+  bottom: 8px;
+
+  width: 70px;
+  height: 44px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+.kkaek-character.chubby .kkaek-leg.left {
+  left: -25px;
+  border-radius: 60% 40% 60% 45%;
+  transform: rotate(-25deg);
+}
+
+.kkaek-character.chubby .kkaek-leg.right {
+  right: -25px;
+  border-radius: 40% 60% 45% 60%;
+  transform: rotate(25deg);
+}
+
+
+/* 배는 팔다리보다 앞 */
+.kkaek-character.chubby .kkaek-body {
+  position: absolute;
+  z-index: 2;
+}
+
+/* 먹보 최종 미세조정 */
+
+/* 팔: 몸통에 조금 더 묻히기 */
+.kkaek-character.chubby .kkaek-arm.left {
+  left: -27px;
+}
+
+.kkaek-character.chubby .kkaek-arm.right {
+  right: -27px;
+}
+
+/* 발: 위로 올려서 절반 이상 몸통 뒤에 숨기기 */
+.kkaek-character.chubby .kkaek-leg {
+  bottom: 24px;
+}
+
+.kkaek-character.chubby .kkaek-leg.left {
+  left: -13px;
+}
+
+.kkaek-character.chubby .kkaek-leg.right {
+  right: -13px;
+}
+
+/* ==================================
+   젠틀꺢
+================================== */
+
+.kkaek-character.gentle {
+  height: 230px;
+  bottom: 42px;
+}
+
+
+/* 머리 */
+.kkaek-character.gentle .kkaek-head {
+  bottom: 92px;
+  z-index: 5;
+}
+
+
+/* 몸통 - 길고 단정하게 */
+.kkaek-character.gentle .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+
+  width: 88px;
+  height: 118px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  border-radius: 45% 45% 38% 38%;
+
+  z-index: 2;
+}
+
+
+/* 기존 어린이 발 숨김 */
+.kkaek-character.gentle .kkaek-feet {
+  display: none;
+}
+
+
+/* 팔/다리 레이어 */
+.kkaek-character.gentle .kkaek-arms,
+.kkaek-character.gentle .kkaek-legs {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+  overflow: visible;
+
+  pointer-events: none;
+}
+
+
+/* =====================
+   젠틀 팔
+===================== */
+
+.kkaek-character.gentle .kkaek-arm {
+  position: absolute;
+
+  top: 126px;
+
+  width: 48px;
+  height: 30px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 3;
+}
+
+
+/* 왼팔 - 가운데로 */
+.kkaek-character.gentle .kkaek-arm.left {
+  left: 49px;
+
+  border-radius: 60% 45% 55% 50%;
+
+  transform: rotate(28deg);
+}
+
+
+/* 오른팔 - 가운데로 */
+.kkaek-character.gentle .kkaek-arm.right {
+  right: 49px;
+
+  border-radius: 45% 60% 50% 55%;
+
+  transform: rotate(-28deg);
+}
+
+
+/* =====================
+   젠틀 다리
+===================== */
+
+.kkaek-character.gentle .kkaek-leg {
+  position: absolute;
+
+  bottom: 3px;
+
+  width: 40px;
+  height: 55px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+
+/* 왼다리 */
+.kkaek-character.gentle .kkaek-leg.left {
+  left: 55px;
+
+  border-radius: 45% 45% 55% 55%;
+
+  transform: rotate(3deg);
+}
+
+
+/* 오른다리 */
+.kkaek-character.gentle .kkaek-leg.right {
+  right: 55px;
+
+  border-radius: 45% 45% 55% 55%;
+
+  transform: rotate(-3deg);
+}
+
+/* ==================================
+   미치광이꺢
+================================== */
+
+.kkaek-character.crazy {
+  height: 230px;
+  bottom: 42px;
+}
+
+/* 머리 */
+.kkaek-character.crazy .kkaek-head {
+  bottom: 88px;
+  z-index: 5;
+
+  /* 살짝 기울어짐 */
+  transform: translateX(-50%) rotate(7deg);
+}
+
+/* 몸통 */
+.kkaek-character.crazy .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+
+  width: 82px;
+  height: 110px;
+
+  transform: translateX(-50%) rotate(-5deg);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  border-radius: 48% 42% 45% 55%;
+
+  z-index: 2;
+}
+
+/* 기존 발 숨기기 */
+.kkaek-character.crazy .kkaek-feet {
+  display: none;
+}
+
+/* 팔다리 기준점 */
+.kkaek-character.crazy .kkaek-arms,
+.kkaek-character.crazy .kkaek-legs {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+
+/* =====================
+   팔
+===================== */
+
+.kkaek-character.crazy .kkaek-arm {
+  position: absolute;
+
+  width: 65px;
+  height: 30px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+/* 왼팔 - 위로 뻗음 */
+.kkaek-character.crazy .kkaek-arm.left {
+  left: 12px;
+  top: 105px;
+
+  border-radius: 60% 40% 55% 45%;
+  transform: rotate(-48deg);
+}
+
+/* 오른팔 - 아래로 뻗음 */
+.kkaek-character.crazy .kkaek-arm.right {
+  right: 5px;
+  top: 142px;
+
+  border-radius: 40% 60% 45% 55%;
+  transform: rotate(38deg);
+}
+
+
+/* =====================
+   다리
+===================== */
+
+.kkaek-character.crazy .kkaek-leg {
+  position: absolute;
+  bottom: 2px;
+
+  width: 58px;
+  height: 42px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+/* 왼다리 */
+.kkaek-character.crazy .kkaek-leg.left {
+  left: 28px;
+
+  border-radius: 60% 40% 55% 50%;
+  transform: rotate(-38deg);
+}
+
+/* 오른다리 */
+.kkaek-character.crazy .kkaek-leg.right {
+  right: 20px;
+
+  border-radius: 40% 60% 50% 55%;
+  transform: rotate(48deg);
+}
+
+/* ==============================
+   기본꺢
+============================== */
+
+.kkaek-character.basic {
+  height: 235px;
+  bottom: 45px;
+}
+
+/* 머리 */
+.kkaek-character.basic .kkaek-head {
+  bottom: 78px;
+  z-index: 5;
+}
+
+/* 몸통 - 원형 꺢 기본 체형 */
+.kkaek-character.basic .kkaek-body {
+  display: block;
+
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+
+  width: 82px;
+  height: 105px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  /* 살짝 손그림 느낌 */
+  border-radius: 45% 48% 42% 46%;
+
+  z-index: 2;
+}
+
+
+/* ==============================
+   기본꺢 팔
+============================== */
+
+.kkaek-character.basic .kkaek-arms {
+  display: block;
+}
+
+.kkaek-character.basic .kkaek-arm {
+  position: absolute;
+  bottom: 80px;
+
+  width: 58px;
+  height: 22px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+/* 왼팔 */
+.kkaek-character.basic .kkaek-arm.left {
+  left: 20px;
+
+  border-radius: 70% 30% 55% 45%;
+  transform: rotate(-22deg);
+}
+
+/* 오른팔 */
+.kkaek-character.basic .kkaek-arm.right {
+  right: 20px;
+
+  border-radius: 30% 70% 45% 55%;
+  transform: rotate(22deg);
+}
+
+
+/* ==============================
+   기본꺢 다리
+============================== */
+
+.kkaek-character.basic .kkaek-legs {
+  display: block;
+}
+
+.kkaek-character.basic .kkaek-leg {
+  position: absolute;
+  bottom: 20px;
+
+  width: 25px;
+  height: 40px;
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  z-index: 1;
+}
+
+/* 왼다리 */
+.kkaek-character.basic .kkaek-leg.left {
+  left: 53px;
+
+  border-radius: 35% 35% 60% 45%;
+  transform: rotate(8deg);
+}
+
+/* 오른다리 */
+.kkaek-character.basic .kkaek-leg.right {
+  right: 53px;
+
+  border-radius: 35% 35% 45% 60%;
+  transform: rotate(-8deg);
+}
+
+
+/* 몸통이 팔다리 연결부를 덮음 */
+.kkaek-character.basic .kkaek-body {
+  z-index: 2;
+}
+
+/* ==============================
+   흑꺢
+   기본꺢 형태 그대로 + 색상 반전
+============================== */
+
+/* 몸 */
+.kkaek-character.dark .kkaek-body {
+  background: #292929;
+  border-color: #fffdf5;
+}
+
+/* 팔 */
+.kkaek-character.dark .kkaek-arm {
+  background: #292929;
+  border-color: #fffdf5;
+}
+
+/* 다리 */
+.kkaek-character.dark .kkaek-leg {
+  background: #292929;
+  border-color: #fffdf5;
+}
+
+/* 머리 */
+.kkaek-character.dark .kkaek-head {
+  background: #292929;
+  border-color: #fffdf5;
+}
+
+/* 눈 */
+.kkaek-character.dark .kkaek-eyes path {
+  stroke: #fffdf5;
+}
+
+/* 입 */
+.kkaek-character.dark .kkaek-mouth path {
+  stroke: #fffdf5;
+}
+
+/* ==================================
+   녹은꺢
+================================== */
+
+.kkaek-character.melted {
+  position: absolute;
+  left: 50%;
+  bottom: 55px;
+
+  width: 300px;
+  height: 150px;
+
+  transform: translateX(-50%);
+
+  animation: meltedBreath 3s ease-in-out infinite;
+}
+
+
+/* 기존 기본꺢 몸/팔다리는 숨김 */
+
+.kkaek-character.melted .kkaek-body,
+.kkaek-character.melted .kkaek-arms,
+.kkaek-character.melted .kkaek-legs,
+.kkaek-character.melted .kkaek-feet {
+  display: none;
+}
+
+
+/* 녹아 퍼진 전체 몸체 */
+
+.kkaek-character.melted::before {
+  content: "";
+
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  width: 285px;
+  height: 105px;
+
+  transform: translateX(-50%);
+
+  background: #fffdf5;
+  border: 4px solid #292929;
+
+  border-radius:
+    48% 52% 18% 22% /
+    72% 70% 30% 32%;
+
+  z-index: 1;
+}
+
+
+/* 머리도 별도 원이 아니라 퍼진 몸에 섞이게 */
+
+.kkaek-character.melted .kkaek-head {
+  position: absolute;
+
+  left: 50%;
+  bottom: 32px;
+
+  width: 150px;
+  height: 115px;
+
+  transform: translateX(-50%);
+
+  background: transparent;
+  border: none;
+
+  border-radius: 50%;
+
+  z-index: 3;
+}
+
+
+/* 눈 */
+
+.kkaek-character.melted .kkaek-eyes {
+  top: 37px;
+}
+
+
+/* 입 */
+
+.kkaek-character.melted .kkaek-mouth {
+  top: 53px;
+}
+
+
+/* 아주 살짝 흐물거림 */
+
+@keyframes meltedBreath {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  50% {
+    transform: translateX(-50%) scaleX(1.025);
+  }
+}
+
+.reset-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 18px;
+  margin-top: 8px;
+}
+
+.reset-button {
+  padding: 4px 6px;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+
+  color: #aaa;
+  font-size: 11px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  color: #666;
+  text-decoration: underline;
+}
