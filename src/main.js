@@ -1,10 +1,10 @@
 import './style.css'
 
 const defaultState = {
-  hunger: 80,
-  happiness: 75,
-  cleanliness: 90,
-  energy: 85,
+  hunger: 10,
+  happiness: 10,
+  cleanliness: 10,
+  energy: ,
 
   bornAt: Date.now(),
   lastUpdated: Date.now(),
@@ -94,21 +94,27 @@ function getDay() {
 function updateEvolution() {
   const age = getAgeMinutes()
 
-  // 테스트용
-  // 1분 : 알 → 아기
-  if (pet.stage === 'egg' && age >= 1) {
+  // 성장속도
+  // 5분 : 알 → 아기
+  if (pet.stage === 'egg' && age >= 5) {
     pet.stage = 'baby'
+  
+    pet.hunger = 50
+    pet.happiness = 50
+    pet.cleanliness = 50
+    pet.energy = 50
+  
     savePet()
   }
 
-  // 2분 : 아기 → 어린이
-  if (pet.stage === 'baby' && age >= 2) {
+  // 15분 : 아기 → 어린이
+  if (pet.stage === 'baby' && age >= 15) {
     pet.stage = 'child'
     savePet()
   }
 
-  // 3분 : 어린이 → 최종 진화
-  if (pet.stage === 'child' && age >= 3) {
+  // 60분 : 어린이 → 최종 진화
+  if (pet.stage === 'child' && age >= 60) {
     pet.stage = chooseEvolution()
     savePet()
   }
@@ -148,12 +154,12 @@ function chooseEvolution() {
 
   /* ==================================
      1. 녹아버린
-     청결/체력 둘 다 박살 + 방치
+     체력 바닥 + 배고픔 바닥 + 장시간 방치
   ================================== */
 
   if (
-    pet.cleanliness <= 20 &&
-    pet.energy <= 25 &&
+    pet.hunger <= 20 &&
+    pet.energy <= 20 &&
     pet.neglectMinutes >= 5
   ) {
     return 'melted'
@@ -174,20 +180,7 @@ function chooseEvolution() {
 
 
   /* ==================================
-     3. 미치광이
-     한 행동에 심하게 과몰입
-  ================================== */
-
-  if (
-    totalActions >= 8 &&
-    actionGap >= 6
-  ) {
-    return 'crazy'
-  }
-
-
-  /* ==================================
-     4. 먹보
+     3. 먹보
      밥을 압도적으로 많이 줌
   ================================== */
 
@@ -202,7 +195,7 @@ function chooseEvolution() {
 
 
   /* ==================================
-     5. 장난꾸러기
+     4. 장난꾸러기
      놀기를 압도적으로 많이 함
   ================================== */
 
@@ -213,6 +206,19 @@ function chooseEvolution() {
     pet.playCount > pet.sleepCount
   ) {
     return 'playful'
+  }
+
+  
+  /* ==================================
+     5. 미치광이
+     한 행동에 심하게 과몰입
+  ================================== */
+
+  if (
+    totalActions >= 8 &&
+    actionGap >= 6
+  ) {
+    return 'crazy'
   }
 
 
@@ -455,22 +461,22 @@ function render() {
 
       <nav class="actions">
 
-  <button data-action="feed">
+  <button data-action="feed" ${pet.stage === 'egg' ? 'disabled' : ''}>
     <span>🍚</span>
     <small>밥</small>
   </button>
 
-  <button data-action="play">
+  <button data-action="play" ${pet.stage === 'egg' ? 'disabled' : ''}>
     <span>🎾</span>
     <small>놀기</small>
   </button>
 
-  <button data-action="wash">
+  <button data-action="wash" ${pet.stage === 'egg' ? 'disabled' : ''}>
     <span>🛁</span>
     <small>씻기</small>
   </button>
 
-  <button data-action="sleep">
+  <button data-action="sleep" ${pet.stage === 'egg' ? 'disabled' : ''}>
     <span>🌙</span>
     <small>잠</small>
   </button>
@@ -571,16 +577,16 @@ setInterval(() => {
   if (pet.stage !== 'egg') {
 
     pet.hunger =
-      clamp(pet.hunger - 0.4)
+      clamp(pet.hunger - 0.8)
 
     pet.happiness =
-      clamp(pet.happiness - 0.15)
+      clamp(pet.happiness - 0.3)
 
     pet.cleanliness =
-      clamp(pet.cleanliness - 0.2)
+      clamp(pet.cleanliness - 0.4)
 
     pet.energy =
-      clamp(pet.energy - 0.2)
+      clamp(pet.energy - 0.4)
 
     const average =
       (
