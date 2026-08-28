@@ -20,7 +20,7 @@ function playPopSound() {
 const bgmAudio = new Audio(bgmUrl)
 bgmAudio.loop = true
 bgmAudio.volume = 0.18
-bgmAudio.preload = 'auto'
+bgmAudio.preload = 'none'
 
 function getAudioContext() {
   if (!audioContext) {
@@ -1075,7 +1075,7 @@ function doAction(action) {
   savePet()
   render()
 }
-
+render()
 setInterval(() => {
   const speech = document.querySelector('#speech')
 
