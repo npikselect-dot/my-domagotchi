@@ -1,4 +1,45 @@
 import './style.css'
+import hatchSoundUrl from './assets/hatch.mp3'
+import bgmUrl from './assets/bgm.mp3'
+
+let crackSoundStarted = false
+let isHatching = false
+let audioContext = null
+const hatchAudio = new Audio(hatchSoundUrl)
+hatchAudio.preload = 'auto'
+hatchAudio.volume = 0.8
+
+function playPopSound() {
+  hatchAudio.currentTime = 0
+
+  hatchAudio.play().catch((error) => {
+    console.log('부화 소리 재생 실패:', error)
+  })
+}
+
+const bgmAudio = new Audio(bgmUrl)
+bgmAudio.loop = true
+bgmAudio.volume = 0.18
+bgmAudio.preload = 'auto'
+
+function getAudioContext() {
+  if (!audioContext) {
+    audioContext = new (
+      window.AudioContext || window.webkitAudioContext
+    )()
+  }
+
+  return audioContext
+}
+
+document.addEventListener(
+  'pointerdown',
+  () => {
+    getAudioContext()
+    bgmAudio.play().catch(() => {})
+  },
+  { once: true }
+)
 
 const defaultState = {
   hunger: 10,
@@ -87,25 +128,67 @@ function getAgeMinutes() {
   )
 }
 
-function getDay() {
-  return Math.floor(getAgeMinutes() / 1440) + 1
+function getGrowthInfo() {
+  const age = getAgeMinutes()
+
+  if (pet.stage === 'egg') {
+    return {
+      current: age,
+      start: 0,
+      target: 2,
+      label: '부화까지'
+    }
+  }
+
+  if (pet.stage === 'baby') {
+    return {
+      current: age,
+      start: 2,
+      target: 15,
+      label: '어린이까지'
+    }
+  }
+
+  if (pet.stage === 'child') {
+    return {
+      current: age,
+      start: 15,
+      target: 40,
+      label: '최종 진화까지'
+    }
+  }
+
+  return null
 }
 
 function updateEvolution() {
   const age = getAgeMinutes()
 
   // 성장속도
-  // 5분 : 알 → 아기
-  if (pet.stage === 'egg' && age >= 5) {
-    pet.stage = 'baby'
+  // 2분 : 알 → 아기
+  if (
+    pet.stage === 'egg' &&
+    age >= 2 &&
+    !isHatching
+  ) {
+    isHatching = true
+    setTimeout(() => render(), 0)
   
-    pet.hunger = 50
-    pet.happiness = 50
-    pet.cleanliness = 50
-    pet.energy = 50
+    setTimeout(() => {
+      pet.stage = 'baby'
   
-    savePet()
+      pet.hunger = 30
+      pet.happiness = 30
+      pet.cleanliness = 30
+      pet.energy = 30
+  
+      savePet()
+      render()
+    }, 1800)
+  
+    playPopSound()
   }
+
 
   // 15분 : 아기 → 어린이
   if (pet.stage === 'baby' && age >= 15) {
@@ -113,8 +196,8 @@ function updateEvolution() {
     savePet()
   }
 
-  // 60분 : 어린이 → 최종 진화
-  if (pet.stage === 'child' && age >= 60) {
+  // 40분 : 어린이 → 최종 진화
+  if (pet.stage === 'child' && age >= 40) {
     pet.stage = chooseEvolution()
     savePet()
   }
@@ -248,9 +331,10 @@ function getStageName() {
   const names = {
     egg: '알',
     baby: '아기',
+    child: '어린이',
     playful: '장난꾸러기',
     chubby: '먹보',
-    gentle: '젠틀',
+    gentle: '젠틀', 
     crazy: '미치광이',
     basic: '그냥',
     dark: '흑꺢',
@@ -261,44 +345,99 @@ function getStageName() {
 }
 
 function getMood() {
-  if (pet.stage === 'egg') {
-    return '씨발 곧 태어날 것 같아!!!'
+  const moodLines = {
+    egg: [
+      '(안에서 뭐가 움직인다...)',
+      '(꿈틀...)',
+      '(조금만 기다려!)'
+    ],
+
+    baby: [
+      '꺢...',
+      '!#$%#@#@#',
+      '꼬르륵',
+      '꺢!',
+      '쿨쿨...'
+    ],
+
+    child: [
+      '뭐 하고 놀까?',
+      '꺢 많이 컸지?',
+      '심심해!',
+      '같이 놀자!',
+      '꺢 잘 크고 있지?'
+    ],
+
+    playful: [
+      '놀자!!!',
+      '심심해 심심해!',
+      '뭐 재미있는 이야기 좀 해봐라',
+      '야르',
+      '야르야르의신야르야르렁'
+    ],
+
+    chubby: [
+      '밥은?',
+      '뭐 먹을 거 없냐?',
+      '배고픈 것 같은데...',
+      '왜이렇게 입이심심하지?',
+      '밥 쳐먹어야지',
+    ],
+
+    gentle: [
+      '저는 예절바른 꺢입니다.',
+      '잘 꺢하고 계신가요?',
+      '저는 꺢합니다.',
+      '천천히 꺢하세요.',
+      '함께 꺢해서 좋네요.'
+    ],
+
+    crazy: [
+      '꺢꺢꺢꺢꺢꺢꺢!!!',
+      '지금 존나 꺢이야!!!',
+      '뭐야뭐야뭐야!!!',
+      '으히히히히히!',
+      '가만히 있을 수 없어!!!'
+    ],
+
+    basic: [
+      '변비인가?',
+      '또 피드백 늦게주네',
+      '아...',
+      '뭐 씨발아',
+      '양치꺢 보고싶어?'
+    ],
+
+    dark: [
+      '...',
+      '씹충요는 정상이 없어',
+      '지랄!',
+      '아 씹충요들 또 지랄이네',
+      '메타몽오시 뒤지라고?'
+    ],
+
+    melted: [
+      '못일어나는중...',
+      '흐물흐물...',
+      '움직이기 귀찮아...',
+      '바닥이 편하다...',
+      '나 좀 일으켜줘...'
+    ]
   }
 
-  const average =
-    (
-      pet.hunger +
-      pet.happiness +
-      pet.cleanliness +
-      pet.energy
-    ) / 4
+  const lines = moodLines[pet.stage] || ['꺢...']
 
-  if (average >= 80) {
-    return '꺢이다~!'
-  }
-
-  if (average >= 60) {
-    return '기분 좋두!'
-  }
-
-  if (average >= 40) {
-    return '조금 심심해...'
-  }
-
-  if (average >= 20) {
-    return '나 좀 꺢해줘...'
-  }
-
-  return '나 지금 물에빠진 두엉이야...'
+  return lines[Math.floor(Math.random() * lines.length)]
 }
 
 function getCharacterHTML() {
   if (pet.stage === 'egg') {
     const age = getAgeMinutes()
     const crackClass = age >= 1 ? 'cracking' : ''
+    const popClass = isHatching ? 'popping' : ''
 
     return `
-      <div class="egg-character ${crackClass}">
+    <div class="egg-character ${crackClass} ${popClass}">
         <div class="egg-shell">
           <div class="egg-crack crack-one"></div>
           <div class="egg-crack crack-two"></div>
@@ -398,6 +537,20 @@ function statusRow(icon, label, value) {
 function render() {
   updateEvolution()
 
+  const age = getAgeMinutes()
+
+  if (
+    pet.stage === 'egg' &&
+    age >= 1 &&
+    !crackSoundStarted
+  ) {
+    crackSoundStarted = true
+  
+    setTimeout(() => playCrackSound(), 300)
+    setTimeout(() => playCrackSound(), 900)
+    setTimeout(() => playCrackSound(), 1500)
+  }
+
   document.querySelector('#app').innerHTML = `
     <main class="game">
 
@@ -410,11 +563,46 @@ function render() {
 
           <h1>꺢</h1>
         </div>
-
-        <div class="day">
-          DAY ${getDay()}
-        </div>
-
+        ${(() => {
+          const growth = getGrowthInfo()
+        
+          if (!growth) {
+            return `
+              <div class="growth-complete">
+                성장 완료 ✦
+              </div>
+            `
+          }
+        
+          const progress = Math.min(
+            100,
+            Math.max(
+              0,
+              ((growth.current - growth.start) /
+                (growth.target - growth.start)) * 100
+            )
+          )
+        
+          const remaining = Math.max(
+            0,
+            growth.target - growth.current
+          )
+        
+          return `
+            <div class="growth-info">
+              <div class="growth-text">
+                ${growth.label} ${remaining}분
+              </div>
+        
+              <div class="growth-bar">
+                <div
+                  class="growth-fill"
+                  style="width: ${progress}%"
+                ></div>
+              </div>
+            </div>
+          `
+        })()}
       </header>
 
       <section class="pet-room">
@@ -425,8 +613,8 @@ function render() {
 
         ${getCharacterHTML()}
 
-        <div class="speech">
-          ${getMood()}
+        <div class="speech" id="speech">
+        ${getMood()}
         </div>
 
       </section>
@@ -507,6 +695,340 @@ function render() {
       )
 
     })
+
+    function playBoingSound() {
+      const audioContext = getAudioContext()
+    
+      const oscillator = audioContext.createOscillator()
+      const gain = audioContext.createGain()
+    
+      oscillator.connect(gain)
+      gain.connect(audioContext.destination)
+    
+      oscillator.type = 'sine'
+    
+      oscillator.frequency.setValueAtTime(280, audioContext.currentTime)
+      oscillator.frequency.exponentialRampToValueAtTime(
+        520,
+        audioContext.currentTime + 0.08
+      )
+      oscillator.frequency.exponentialRampToValueAtTime(
+        360,
+        audioContext.currentTime + 0.18
+      )
+    
+      gain.gain.setValueAtTime(0.12, audioContext.currentTime)
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + 0.22
+      )
+    
+      oscillator.start()
+      oscillator.stop(audioContext.currentTime + 0.22)
+    }
+
+    function playCrackSound() {
+      const audioContext = new (
+        window.AudioContext || window.webkitAudioContext
+      )()
+    
+      const now = audioContext.currentTime
+    
+      // 짧은 "쩍"
+      for (let i = 0; i < 3; i++) {
+        const oscillator = audioContext.createOscillator()
+        const gain = audioContext.createGain()
+    
+        oscillator.type = 'square'
+        oscillator.frequency.setValueAtTime(
+          180 + Math.random() * 140,
+          now + i * 0.045
+        )
+    
+        oscillator.frequency.exponentialRampToValueAtTime(
+          70,
+          now + i * 0.045 + 0.07
+        )
+    
+        gain.gain.setValueAtTime(0, now + i * 0.045)
+        gain.gain.linearRampToValueAtTime(
+          0.045,
+          now + i * 0.045 + 0.005
+        )
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          now + i * 0.045 + 0.08
+        )
+    
+        oscillator.connect(gain)
+        gain.connect(audioContext.destination)
+    
+        oscillator.start(now + i * 0.045)
+        oscillator.stop(now + i * 0.045 + 0.08)
+      }
+    }
+
+    function playPopSound() {
+      hatchAudio.currentTime = 0
+    
+      hatchAudio.play().catch((error) => {
+        console.log('부화 소리 재생 실패:', error)
+      })
+    }
+
+    const character = document.querySelector(
+      '.kkaek-character, .egg-character'
+    )
+
+    if (character) {
+      character.addEventListener('click', () => {
+        character.classList.remove('boing')
+        
+    
+        void character.offsetWidth
+    
+        character.classList.add('boing')
+        playBoingSound()
+        
+        if (pet.stage === 'egg') {
+          hatchAudio.play()
+            .then(() => {
+              hatchAudio.pause()
+              hatchAudio.currentTime = 0
+            })
+            .catch(() => {})
+        }
+
+        if (pet.stage === 'egg') {
+          const ctx = getAudioContext()
+        
+          if (ctx.state === 'suspended') {
+            ctx.resume()
+          }
+        
+          const unlock = ctx.createOscillator()
+          const unlockGain = ctx.createGain()
+        
+          unlock.connect(unlockGain)
+          unlockGain.connect(ctx.destination)
+        
+          unlockGain.gain.setValueAtTime(0.0001, ctx.currentTime)
+        
+          unlock.start()
+          unlock.stop(ctx.currentTime + 0.05)
+        }
+
+        setTimeout(() => {
+          character.classList.remove('boing')
+        }, 450)
+    
+        const speech = document.querySelector('#speech')
+    
+        const touchLinesByStage = {
+          egg: [
+            '(꿈틀꿈틀)',
+            '...',
+          ],
+
+          baby: [
+            '꺢!',
+            '끾!',
+            '헤헤',
+            '꺠앢!',
+            '또!',
+            '꺼억'
+          ],
+        
+          child: [
+            '왜 눌러!',
+            '꺢꺢!',
+            '더 좋은 꺢을 배웠어',
+            '나랑 꺢하자!',
+            '또 꺢해봐!',
+            '뿡',
+            '애~'
+          ],
+        
+          playful: [
+            '왜 눌러!',
+            '간지러!',
+            '야!!!!!!!!!!!!!',
+            '야!!!!!!!야!!!!!!!야!!!!!!!',
+            '킥킥킥킥',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '그만해~!',
+            '뒤진다~!',
+            '애를 애를 애~',
+            '닭갈비를 꺼내도록하죠~',
+            '내가 꺢이라면???',
+            '헥헥헥',
+            '어어???',
+            '야! 잡아봐!',
+            '큭큭 못 잡지!',
+            '또 눌렀다! 이제 꺢해봐!',
+            '간지럽잖아!!',
+            '놀자 놀자!!'
+          ],
+        
+          chubby: [
+            '왜 눌러!',
+            '간지러!',
+            '야!!!!!!!!!!!!!',
+            '야!!!!!!!야!!!!!!!야!!!!!!!',
+            '킥킥',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '그만해!',
+            '뒤진다!',
+            '애를 애를 애.',
+            '닭갈비는 먹어도 먹어도 질리지가 않음',
+            '물에 빠진 고기는 별로야',
+            '꺼어어억~',
+            '버억',
+            '밥 줘.',
+            '먹을 거 없어?',
+            '누르지 말고 밥차려',
+            '배고파...',
+            '간식!',
+            '먹어도 먹어도 배가 고파'
+          ],
+        
+          gentle: [
+            '왜 눌러!',
+            '간지러!',
+            '야...!',
+            '야...! 야...! 야...!!!',
+            '정중하게 인사할게요.',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '굽신굽신',
+            '그만해주세요.',
+            '애를 애를 애.',
+            '닭갈비를 꺼냈습니다.',
+            '기분이 이상해요.',
+            '안녕하세요 PD님 :)',
+            '어어?',
+            '라고할줄알았냐?',
+            '간지러.',
+            '살살 눌러주세요.',
+            '후훗',
+            '저는 젠틀꺢입니다.'
+          ],
+        
+          crazy: [
+            '삐걱삐걱!',
+            '간지러!',
+            '야!!!!!!!!!!!!!',
+            '야!!!!!!!야!!!!!!!야!!!!!!!',
+            '킥킥',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '그만!!!',
+            '뒤진다!~~!!!',
+            '애를 애를 애!!!',
+            '닭닭닭닭 닭갈비',
+            '기분이 이상해??',
+            '꺠애애애애앢',
+            '어어???',
+            '꺢꺢꺢꺢!',
+            '또 눌러!!',
+            '꺢꺢꺢꺢?',
+            '삐꾸!',
+            '애애애애애애~~~'
+          ],
+        
+          basic: [
+            '왜 눌러!',
+            '간지러!',
+            '야!!!!!!!!!!!!!',
+            '야!!!!!!!야!!!!!!!야!!!!!!!',
+            '킥킥',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '그만해!',
+            '뒤진다!',
+            '애를 애를 애.',
+            '니가 눌러서 닭갈비 꺼냄.',
+            '기분이 이상해',
+            '꺠애애애애앢',
+            '어어???',
+            '뭐.',
+            '꺢은 꺢이지.',
+            '뭐 어쩌라고!',
+            '어? 눌러?',
+            '원래 기본꺢이 원조야.',
+            '너 씨발 기본꺢이 불만이야?'
+          ],
+        
+          dark: [
+            '왜 눌러 씨발',
+            '좆같아',
+            '야!!!!!!!!!!!!!',
+            '야!!!!!!!야!!!!!!!야!!!!!!!',
+            '씹충요는 사회악이야',
+            '애',
+            '갹굑굑',
+            '끾',
+            '그만.',
+            '뒤진다',
+            '애를 애를 애.',
+            '에휴 씨발',
+            '일어나자마자 씹충요 밟았네',
+            '두광좀 줘.',
+            '어어?',
+            '...',
+            '건드리지 마',
+            '왜 왔어',
+            '......',
+            '너죽임'
+          ],
+        
+          melted: [
+            '왜 눌... 러...',
+            '철퍽거려...',
+            '야........',
+            '야... 야... 소리지를 힘도 없다',
+            '큭큭큭...',
+            '애~',
+            '갹굑굑',
+            '끾',
+            '그만해...',
+            '더워',
+            '애를 애를 애...',
+            '숯불1후라이드1을 먹으면 몸이돌아오려나',
+            '니가 날 녹였어',
+            '꺠애애애애애애애애앢',
+            '더 녹는다...',
+            '흐물...',
+            '꺢 녹는다...',
+            '꺢꺢...',
+            '으으...',
+            '나 좀 꺢해봐......'
+          ]
+        }
+    
+        if (speech) {
+          const touchLines =
+  touchLinesByStage[pet.stage] || ['꺢!']
+
+const randomLine =
+  touchLines[Math.floor(Math.random() * touchLines.length)]
+    
+          speech.textContent = randomLine
+    
+          setTimeout(() => {
+            speech.textContent = getMood()
+          }, 3000)
+        }
+      })
+    }
+
     const resetButton = document.querySelector('#reset-button')
 
 if (resetButton) {
@@ -528,44 +1050,25 @@ function doAction(action) {
 
   if (action === 'feed') {
     pet.hunger =
-      clamp(pet.hunger + 20)
-
-    pet.cleanliness =
-      clamp(pet.cleanliness - 4)
-
+      clamp(pet.hunger + 7)
     pet.feedCount++
   }
 
   if (action === 'play') {
     pet.happiness =
-      clamp(pet.happiness + 20)
-
-    pet.energy =
-      clamp(pet.energy - 8)
-
-    pet.hunger =
-      clamp(pet.hunger - 4)
-
+      clamp(pet.happiness + 8)
     pet.playCount++
   }
 
   if (action === 'wash') {
     pet.cleanliness =
-      clamp(pet.cleanliness + 30)
-
-    pet.happiness =
-      clamp(pet.happiness - 2)
-
+      clamp(pet.cleanliness + 7)
     pet.washCount++
   }
 
   if (action === 'sleep') {
     pet.energy =
-      clamp(pet.energy + 35)
-
-    pet.hunger =
-      clamp(pet.hunger - 5)
-
+      clamp(pet.energy + 14)
     pet.sleepCount++
   }
 
@@ -574,8 +1077,15 @@ function doAction(action) {
 }
 
 setInterval(() => {
-  if (pet.stage !== 'egg') {
+  const speech = document.querySelector('#speech')
 
+  if (speech) {
+    speech.textContent = getMood()
+  }
+}, 12000)
+
+setInterval(() => {
+  if (pet.stage !== 'egg') {
     pet.hunger =
       clamp(pet.hunger - 0.8)
 
@@ -604,9 +1114,4 @@ setInterval(() => {
   updateEvolution()
   savePet()
   render()
-
 }, 60000)
-savePet()
-savePet()
-render()
-

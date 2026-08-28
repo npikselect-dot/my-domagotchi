@@ -551,6 +551,75 @@ button {
   }
 }
 
+.egg-character.cracking .egg-shell {
+  animation: eggShellShake 2.4s ease-in-out infinite;
+}
+
+@keyframes eggShellShake {
+  /* 가만히 */
+  0%,
+  18% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  /* 첫 움찔 */
+  22% {
+    transform: translateX(calc(-50% - 2px)) rotate(-1deg);
+  }
+
+  26% {
+    transform: translateX(calc(-50% + 2px)) rotate(1deg);
+  }
+
+  30%,
+  48% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  /* 두 번째 흔들 */
+  52% {
+    transform: translateX(calc(-50% - 3px)) rotate(-2deg);
+  }
+
+  57% {
+    transform: translateX(calc(-50% + 3px)) rotate(2deg);
+  }
+
+  62% {
+    transform: translateX(calc(-50% - 2px)) rotate(-1deg);
+  }
+
+  67% {
+    transform: translateX(calc(-50% + 2px)) rotate(1deg);
+  }
+
+  70% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  /* 마지막 부들부들 */
+  76% {
+    transform: translateX(calc(-50% - 4px)) rotate(-3deg);
+  }
+
+  80% {
+    transform: translateX(calc(-50% + 4px)) rotate(3deg);
+  }
+
+  84% {
+    transform: translateX(calc(-50% - 3px)) rotate(-2deg);
+  }
+
+  88% {
+    transform: translateX(calc(-50% + 3px)) rotate(2deg);
+  }
+
+  92%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+}
+
 /* =========================
    알 부화 연출
 ========================= */
@@ -575,28 +644,59 @@ button {
 
 
 /* 금 */
-
 .crack-one {
   left: 58px;
-  top: 42px;
-  height: 42px;
-  transform: rotate(18deg);
+  top: -1px;
+  height: 24px;
+  transform: rotate(28deg);
+  animation: crackSnap 0.12s ease-out 0.3s both;
 }
 
 .crack-two {
-  left: 43px;
-  top: 65px;
-  height: 34px;
-  transform: rotate(-42deg);
+  left: 45px;
+  top: 18px;
+  height: 24px;
+  transform: rotate(-35deg);
+  animation: crackSnap 0.12s ease-out 0.9s both;
 }
 
 .crack-three {
-  left: 72px;
-  top: 65px;
-  height: 34px;
-  transform: rotate(47deg);
+  left: 59px;
+  top: 35px;
+  height: 24px;
+  transform: rotate(30deg);
+  animation: crackSnap 0.12s ease-out 1.5s both;
 }
 
+@keyframes crackGrow1 {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+
+  to {
+    height: 24px;
+    opacity: 1;
+  }
+}
+
+@keyframes crackSnap {
+  0% {
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  61% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
 
 /* 부화 직전 더 심하게 흔들림 */
 
@@ -1524,4 +1624,96 @@ button {
 
 .actions button:disabled span {
   opacity: 0.35;
+}
+
+@keyframes kkaekBoing {
+  0% {
+    transform: translateX(-50%) scale(1, 1);
+  }
+
+  30% {
+    transform: translateX(-50%) scale(1.12, 0.88) translateY(4px);
+  }
+
+  60% {
+    transform: translateX(-50%) scale(0.92, 1.12) translateY(-12px);
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1, 1) translateY(0);
+  }
+}
+
+.kkaek-character.boing,
+.egg-character.boing {
+  animation: kkaekBoing 0.45s ease-out;
+}
+
+.growth-info,
+.growth-complete {
+  width: 120px;
+  padding: 8px 10px;
+  border: 2px solid #e4d4bf;
+  border-radius: 18px;
+  background: #fffaf2;
+}
+
+.growth-text,
+.growth-complete {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: #5b4d3f;
+}
+
+.growth-bar {
+  width: 100%;
+  height: 7px;
+  margin-top: 6px;
+  background: #eee4d7;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.growth-fill {
+  height: 100%;
+  background: #f2b35b;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+@keyframes eggPop {
+  0% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateX(-50%) scale(1.08);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translateX(-50%) scale(0.92);
+    opacity: 1;
+  }
+
+  60% {
+    transform: translateX(-50%) scale(1.18);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateX(-50%) scale(1.35);
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1.55);
+    opacity: 0;
+  }
+}
+
+.egg-character.popping {
+  animation: eggPop 1.8s ease-out forwards;
 }
