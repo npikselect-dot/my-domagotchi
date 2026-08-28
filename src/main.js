@@ -4,7 +4,7 @@ const defaultState = {
   hunger: 10,
   happiness: 10,
   cleanliness: 10,
-  energy: ,
+  energy: 10,
 
   bornAt: Date.now(),
   lastUpdated: Date.now(),
